@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="de" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Circular calculator</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}"/>
+    <link rel="stylesheet" th:href="@{/fontawesome/css/font-awesome.min.css}"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .invalid-feedback {
+          font-size: .75rem;
+        }
+    </style>
+</head>
+<body>
+<article class="container">
+    <header class="row mt-3 mb-3">
+        <section class="justify-content-center align-items-center d-flex col-sm-12">
+            <span class="fa fa-circle-o fa-5x" aria-hidden="true"></span>
+            &nbsp;&nbsp;
+            <h1>Circular calculator</h1>
+        </section>
+    </header>
+    <section>
+        <form class="row mt-3" action="#" method="POST" th:action="@{/calculate}" th:object="${circle}">
+            <div class="offset-sm-4 col-sm-4 mb-3">
+                <div class="row mt-3">
+                    <label for="txtRadius" class="form-label">Radius:</label>
+                    <div class="input-group has-validation">
+                        <span class="input-group-text">#</span>
+                        <input type="text" id="txtRadius" th:field="*{radius}" th:errorclass="danger"
+                               class="form-control"
+                               th:classappend="${#fields.hasErrors('radius') ? 'is-invalid' : ''}"
+                               placeholder="Radius"
+                               aria-label="Radius"/>
+                        <p th:if="${#fields.hasErrors('radius')}" th:errors="*{radius}"
+                           class="invalid-feedback"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="offset-sm-4 col-sm-4">
+                    <button type="submit" class="btn btn-outline-success me-2">
+                        <span class="fa fa-check"></span>&nbsp;Calculate
+                    </button>
+                    <a th:href="@{/reset}" class="btn btn-outline-danger me-2"><span class="fa fa-times"></span>&nbsp;Reset</a>
+                </div>
+            </div>
+        </form>
+    </section>
+    <section th:if="${result != null}" class="row mt-5">
+        <section class="offset-sm-4 col-sm-4">
+            <p>Radius: <span th:text="${result.radius}"></span></p>
+            <p>Diameter: <span th:text="${result.diameter}"></span></p>
+            <p>Surface: <span th:text="${result.surface}"></span></p>
+            <p>Circumference: <span th:text="${result.circumference}"></span></p>
+        </section>
+        <section class="justify-content-center align-items-center d-flex col-sm-12">
+            <canvas id="circleCanvas" width="300" height="300"></canvas>
+            <script th:inline="javascript">
+                const canvas = document.querySelector("#circleCanvas");
+                const ctx = canvas.getContext("2d");
+                const radius = /*[[${result.radius}]]*/ "";
+
+                ctx.beginPath();
+                ctx.arc(100, 75, radius, 0, 2 * Math.PI);
+                ctx.stroke();
+            </script>
+        </section>
+    </section>
+</article>
+<script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+</body>
+</html>
